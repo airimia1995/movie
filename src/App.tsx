@@ -10,6 +10,8 @@ function App() {
   const [dcId, setDcId] = React.useState<number | null>(null);
   const [isMarvelSelected, setIsMarvelSelected] = React.useState<boolean>(true);
   const [isDcSelected, setIsDcSelected] = React.useState<boolean>(true);
+  const [sortBy, setSortBy] = React.useState<string>("");
+  const [sortDirection, setSortDirection] = React.useState<string>("desc");
 
   useEffect(() => {
     const getMarvelCompanyId = async () => {
@@ -38,21 +40,38 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const getAxiosInstance = async (withCompany: string) => {
+    const getAxiosInstance = async (
+      withCompany: string,
+      sortBy: string,
+      sortDirection: string
+    ) => {
       const movies = await axiosInstance.get(
-        `https://api.themoviedb.org/3/discover/movie?with_companies=${withCompany}&page=2&api_key=c6eac87b4d5ef2d48c48b629ce0c8f18`
+        `https://api.themoviedb.org/3/discover/movie?with_companies=${withCompany}${
+          sortBy ? "&sort_by=" + sortBy + "." + sortDirection : ""
+        }&page=1&api_key=c6eac87b4d5ef2d48c48b629ce0c8f18`
       );
       setMovies(movies.data.results);
     };
     console.warn(`${marvelId}|${dcId}`);
     getAxiosInstance(
-      `${isMarvelSelected ? marvelId : ""}|${isDcSelected ? dcId : ""}`
+      `${isMarvelSelected ? marvelId : ""}|${isDcSelected ? dcId : ""}`,
+      sortBy,
+      sortDirection
     );
-  }, [marvelId, dcId, isMarvelSelected, isDcSelected]);
+  }, [marvelId, dcId, isMarvelSelected, isDcSelected, sortBy, sortDirection]);
 
   return (
-    <div className="App">
-      <Dropdown />
+    <div className="App p-4">
+      <Dropdown
+        onSelect={(id) => {
+          setSortBy(id);
+        }}
+        sortBy={sortBy}
+        sorters={[
+          { label: "Release Date", id: "release_date" },
+          { label: "Audience rating", id: "vote_average" },
+        ]}
+      />
       <FilterByCompany
         onClickMarvel={() => {
           setIsMarvelSelected(!isMarvelSelected);
