@@ -1,11 +1,12 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
+import { ISortDirection } from "../types";
 
 const OrderDirection = ({
   sortDirection,
   onChange,
 }: {
-  sortDirection: "desc" | "asc";
-  onChange: (type: "desc" | "asc") => void;
+  sortDirection: ISortDirection;
+  onChange: (type: ISortDirection) => void;
 }) => {
   return (
     <div

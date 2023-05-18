@@ -1,10 +1,11 @@
 import axiosInstance from ".";
+import { ISortDirection } from "../types";
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 const getSortedMovies = async (
     withCompany: string,
     sortBy: string,
-    sortDirection: string
+    sortDirection: ISortDirection
 ) => {
     const movies = await axiosInstance.get(
         `https://api.themoviedb.org/3/discover/movie?with_companies=${withCompany}${sortBy ? "&sort_by=" + sortBy + "." + sortDirection : ""
