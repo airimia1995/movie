@@ -18,6 +18,7 @@ function App() {
   const [isMarvelSelected, setIsMarvelSelected] = React.useState<boolean>(true);
   const [isDcSelected, setIsDcSelected] = React.useState<boolean>(true);
   const [sortBy, setSortBy] = React.useState<string>("");
+  const [pageNumber, setPageNumber] = React.useState<number>(0);
   const [sortDirection, setSortDirection] =
     React.useState<ISortDirection>("desc");
   const [error, setError] = React.useState<string | null>(null);
@@ -49,7 +50,8 @@ function App() {
         const movies = await getSortedMovies(
           `${isMarvelSelected ? marvelId : ""}|${isDcSelected ? dcId : ""}`,
           sortBy,
-          sortDirection
+          sortDirection,
+          pageNumber + 1
         );
 
         const url = new URL(window.location as any);
@@ -63,7 +65,7 @@ function App() {
       }
     };
     fetchMovies();
-  }, [marvelId, dcId, isMarvelSelected, isDcSelected, sortBy, sortDirection]);
+  }, [marvelId, dcId, isMarvelSelected, isDcSelected, sortBy, sortDirection, pageNumber]);
 
   return (
     <div className="App p-4">
@@ -96,7 +98,9 @@ function App() {
       {movies.map((item: IMovie) => (
         <Card key={item.id} movie={item} />
       ))}
-      <Pagination />
+      <div className="flex justify-center grow">
+        <Pagination pageIndex={pageNumber} pageCount={100} setPageIndex={(item) => {setPageNumber(item)}} />
+      </div>
     </div>
   );
 }

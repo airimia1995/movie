@@ -5,11 +5,12 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 const getSortedMovies = async (
     withCompany: string,
     sortBy: string,
-    sortDirection: ISortDirection
+    sortDirection: ISortDirection,
+    pageNumber: number,
 ) => {
     const movies = await axiosInstance.get(
         `https://api.themoviedb.org/3/discover/movie?with_companies=${withCompany}${sortBy ? "&sort_by=" + sortBy + "." + sortDirection : ""
-        }&page=1&api_key=${API_KEY}`
+        }&page=1&api_key=${API_KEY}&page=${pageNumber}`
     );
 
     if (movies?.data?.results) {
