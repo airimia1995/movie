@@ -22,6 +22,7 @@ function App() {
   const [sortDirection, setSortDirection] =
     React.useState<ISortDirection>("desc");
   const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   useEffect(() => {
     const fetchId = async () => {
@@ -46,6 +47,7 @@ function App() {
 
   useEffect(() => {
     const fetchMovies = async () => {
+      setLoading(true);
       try {
         const movies = await getSortedMovies(
           `${isMarvelSelected ? marvelId : ""}|${isDcSelected ? dcId : ""}`,
@@ -63,10 +65,22 @@ function App() {
       } catch (e: any) {
         setError(e.message);
       }
+      setLoading(false);
     };
     fetchMovies();
-  }, [marvelId, dcId, isMarvelSelected, isDcSelected, sortBy, sortDirection, pageNumber]);
+  }, [
+    marvelId,
+    dcId,
+    isMarvelSelected,
+    isDcSelected,
+    sortBy,
+    sortDirection,
+    pageNumber,
+  ]);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="App p-4">
       {error && <div className="bg-red-500">{error}</div>}
@@ -99,7 +113,13 @@ function App() {
         <Card key={item.id} movie={item} />
       ))}
       <div className="flex justify-center grow">
-        <Pagination pageIndex={pageNumber} pageCount={100} setPageIndex={(item) => {setPageNumber(item)}} />
+        <Pagination
+          pageIndex={pageNumber}
+          pageCount={100}
+          setPageIndex={(item) => {
+            setPageNumber(item);
+          }}
+        />
       </div>
     </div>
   );
