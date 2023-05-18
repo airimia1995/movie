@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import "./App.css";
-import axiosInstance from "./api";
 import { Movie } from "./types";
 import {
   Card,
@@ -9,12 +8,7 @@ import {
   SortDirection,
   Pagination,
 } from "./components";
-import {
-  getCompanyIds,
-  getDcCompanyId,
-  getMarvelCompanyId,
-  getSortedMovies,
-} from "./api/MovieApi";
+import { getCompanyIds, getSortedMovies } from "./api/MovieApi";
 
 function App() {
   const [movies, setMovies] = React.useState<Movie[]>([]);
@@ -32,7 +26,6 @@ function App() {
     const fetchId = async () => {
       try {
         const companyIds = await getCompanyIds();
-        console.warn("companyIds", companyIds);
         companyIds?.forEach((company) => {
           if (company.marvelId) {
             setMarvelId(company.marvelId);
@@ -40,6 +33,9 @@ function App() {
             setDcId(company.dcId);
           }
         });
+        const urlParams = new URLSearchParams(window.location.search);
+        setSortBy(urlParams.get("sortBy") as string);
+        setSortDirection(urlParams.get("sortDirection") as "desc" | "asc");
       } catch (error: any) {
         setError(error.message);
       }
@@ -55,6 +51,12 @@ function App() {
           sortBy,
           sortDirection
         );
+
+        const url = new URL(window.location as any);
+        sortBy && url.searchParams.set("sortBy", sortBy);
+        sortDirection && url.searchParams.set("sortDirection", sortDirection);
+        window.history.pushState(null, "", url.toString());
+
         setMovies(movies);
       } catch (e: any) {
         setError(e.message);
@@ -65,6 +67,7 @@ function App() {
 
   return (
     <div className="App p-4">
+      {error && <div className="bg-red-500">{error}</div>}
       <div className="flex grow justify-center">
         <Dropdown
           onSelect={(id) => {
