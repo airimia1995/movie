@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "./App.css";
-import { Movie } from "./types";
+import { IMovie, ISortDirection } from "./types";
 import {
   Card,
   Dropdown,
@@ -9,17 +9,17 @@ import {
   Pagination,
 } from "./components";
 import { getCompanyIds, getSortedMovies } from "./api/MovieApi";
+import { sorters } from "./types/constants";
 
 function App() {
-  const [movies, setMovies] = React.useState<Movie[]>([]);
+  const [movies, setMovies] = React.useState<IMovie[]>([]);
   const [marvelId, setMarvelId] = React.useState<number | null>(null);
   const [dcId, setDcId] = React.useState<number | null>(null);
   const [isMarvelSelected, setIsMarvelSelected] = React.useState<boolean>(true);
   const [isDcSelected, setIsDcSelected] = React.useState<boolean>(true);
   const [sortBy, setSortBy] = React.useState<string>("");
-  const [sortDirection, setSortDirection] = React.useState<"desc" | "asc">(
-    "desc"
-  );
+  const [sortDirection, setSortDirection] =
+    React.useState<ISortDirection>("desc");
   const [error, setError] = React.useState<string | null>(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ function App() {
         });
         const urlParams = new URLSearchParams(window.location.search);
         setSortBy(urlParams.get("sortBy") as string);
-        setSortDirection(urlParams.get("sortDirection") as "desc" | "asc");
+        setSortDirection(urlParams.get("sortDirection") as ISortDirection);
       } catch (error: any) {
         setError(error.message);
       }
@@ -74,10 +74,7 @@ function App() {
             setSortBy(id);
           }}
           sortBy={sortBy}
-          sorters={[
-            { label: "Release Date", id: "release_date" },
-            { label: "Audience rating", id: "vote_average" },
-          ]}
+          sorters={sorters}
         />
         <SortDirection
           sortDirection={sortDirection}
@@ -96,7 +93,7 @@ function App() {
         isDcSelected={isDcSelected}
         isMarvelSelected={isMarvelSelected}
       />
-      {movies.map((item: Movie) => (
+      {movies.map((item: IMovie) => (
         <Card key={item.id} movie={item} />
       ))}
       <Pagination />

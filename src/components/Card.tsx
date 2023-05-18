@@ -1,6 +1,6 @@
-import { Movie } from "../types";
+import { IMovie } from "../types";
 
-const Card = ({ movie }: { movie: Movie }) => {
+const Card = ({ movie }: { movie: IMovie }) => {
   return (
     <div className="border-2 mb-5 flex bg-slate-300 p-4 flex-col sm:flex-row">
       <img
@@ -14,7 +14,9 @@ const Card = ({ movie }: { movie: Movie }) => {
         <p className="text-left mt-5">{movie.overview}</p>
       </div>
       <div className="justify-center flex">
-        <div className="bg-red-500 rounded-full p-2 w-10 h-10">{movie.vote_average}</div>
+        <div className="bg-red-500 rounded-full p-2 w-10 h-10">
+          {movie.vote_average}
+        </div>
       </div>
     </div>
   );

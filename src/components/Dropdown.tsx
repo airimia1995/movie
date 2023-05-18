@@ -43,7 +43,7 @@ export default function Example({
           <div className="py-1">
             {sorters.map((item) => {
               return (
-                <Menu.Item>
+                <Menu.Item key={item.id}>
                   {({ active }) => (
                     <div
                       key={item.id}

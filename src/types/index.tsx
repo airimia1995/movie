@@ -1,4 +1,4 @@
-export type Movie = {
+export type IMovie = {
   adult: boolean;
   backdrop_path: string;
   genre_ids: number[];
@@ -14,3 +14,6 @@ export type Movie = {
   vote_average: number;
   vote_count: number;
 };
+
+
+export type ISortDirection = "desc" | "asc";
