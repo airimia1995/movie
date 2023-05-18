@@ -11,8 +11,22 @@ const FilterByCompany = ({
 }) => {
   return (
     <div className="w-full flex py-2">
-      <div className={`w-1/2 me-3 ${isMarvelSelected ? 'bg-teal-500' : 'bg-neutral-300'}`} onClick={onClickMarvel}>Marvel</div>
-      <div className={`w-1/2 ${isDcSelected ? 'bg-teal-500' : 'bg-neutral-300'}`} onClick={onClickDc}>Dc</div>
+      <div
+        className={`w-1/2 cursor-pointer me-3 ${
+          isMarvelSelected ? "bg-teal-500" : "bg-neutral-300"
+        }`}
+        onClick={onClickMarvel}
+      >
+        Marvel
+      </div>
+      <div
+        className={`w-1/2 cursor-pointer ${
+          isDcSelected ? "bg-teal-500" : "bg-neutral-300"
+        }`}
+        onClick={onClickDc}
+      >
+        Dc
+      </div>
     </div>
   );
 };

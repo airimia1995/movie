@@ -2,7 +2,19 @@ import React, { useEffect } from "react";
 import "./App.css";
 import axiosInstance from "./api";
 import { Movie } from "./types";
-import { Card, Dropdown, FilterByCompany, Pagination } from "./components";
+import {
+  Card,
+  Dropdown,
+  FilterByCompany,
+  SortDirection,
+  Pagination,
+} from "./components";
+import {
+  getCompanyIds,
+  getDcCompanyId,
+  getMarvelCompanyId,
+  getSortedMovies,
+} from "./api/MovieApi";
 
 function App() {
   const [movies, setMovies] = React.useState<Movie[]>([]);
@@ -11,67 +23,66 @@ function App() {
   const [isMarvelSelected, setIsMarvelSelected] = React.useState<boolean>(true);
   const [isDcSelected, setIsDcSelected] = React.useState<boolean>(true);
   const [sortBy, setSortBy] = React.useState<string>("");
-  const [sortDirection, setSortDirection] = React.useState<string>("desc");
+  const [sortDirection, setSortDirection] = React.useState<"desc" | "asc">(
+    "desc"
+  );
+  const [error, setError] = React.useState<string | null>(null);
 
   useEffect(() => {
-    const getMarvelCompanyId = async () => {
-      const movies = await axiosInstance.get(
-        "https://api.themoviedb.org/3/search/company?api_key=c6eac87b4d5ef2d48c48b629ce0c8f18&query=Marvel Studios"
-      );
-      setMarvelId(movies.data.results[0].id);
-      console.warn(movies.data.results[0].id);
-      return movies.data.results[0].id;
+    const fetchId = async () => {
+      try {
+        const companyIds = await getCompanyIds();
+        console.warn("companyIds", companyIds);
+        companyIds?.forEach((company) => {
+          if (company.marvelId) {
+            setMarvelId(company.marvelId);
+          } else {
+            setDcId(company.dcId);
+          }
+        });
+      } catch (error: any) {
+        setError(error.message);
+      }
     };
-    const getDcCompanyId = async () => {
-      const movies = await axiosInstance.get(
-        "https://api.themoviedb.org/3/search/company?api_key=c6eac87b4d5ef2d48c48b629ce0c8f18&query=DC Entertainment"
-      );
-      setDcId(movies.data.results[0].id);
-      console.warn(movies.data.results[0].id);
-      return movies.data.results[0].id;
-    };
-
-    const getAll = async () => {
-      await getMarvelCompanyId();
-      await getDcCompanyId();
-      // await getAxiosInstance(`${marvelId}|${dcId}`);
-    };
-    getAll();
+    fetchId();
   }, []);
 
   useEffect(() => {
-    const getAxiosInstance = async (
-      withCompany: string,
-      sortBy: string,
-      sortDirection: string
-    ) => {
-      const movies = await axiosInstance.get(
-        `https://api.themoviedb.org/3/discover/movie?with_companies=${withCompany}${
-          sortBy ? "&sort_by=" + sortBy + "." + sortDirection : ""
-        }&page=1&api_key=c6eac87b4d5ef2d48c48b629ce0c8f18`
-      );
-      setMovies(movies.data.results);
+    const fetchMovies = async () => {
+      try {
+        const movies = await getSortedMovies(
+          `${isMarvelSelected ? marvelId : ""}|${isDcSelected ? dcId : ""}`,
+          sortBy,
+          sortDirection
+        );
+        setMovies(movies);
+      } catch (e: any) {
+        setError(e.message);
+      }
     };
-    console.warn(`${marvelId}|${dcId}`);
-    getAxiosInstance(
-      `${isMarvelSelected ? marvelId : ""}|${isDcSelected ? dcId : ""}`,
-      sortBy,
-      sortDirection
-    );
+    fetchMovies();
   }, [marvelId, dcId, isMarvelSelected, isDcSelected, sortBy, sortDirection]);
 
   return (
     <div className="App p-4">
-      <Dropdown
-        onSelect={(id) => {
-          setSortBy(id);
-        }}
-        sortBy={sortBy}
-        sorters={[
-          { label: "Release Date", id: "release_date" },
-          { label: "Audience rating", id: "vote_average" },
-        ]}
-      />
+      <div className="flex grow justify-center">
+        <Dropdown
+          onSelect={(id) => {
+            setSortBy(id);
+          }}
+          sortBy={sortBy}
+          sorters={[
+            { label: "Release Date", id: "release_date" },
+            { label: "Audience rating", id: "vote_average" },
+          ]}
+        />
+        <SortDirection
+          sortDirection={sortDirection}
+          onChange={(type) => {
+            setSortDirection(type);
+          }}
+        />
+      </div>
       <FilterByCompany
         onClickMarvel={() => {
           setIsMarvelSelected(!isMarvelSelected);
@@ -82,22 +93,6 @@ function App() {
         isDcSelected={isDcSelected}
         isMarvelSelected={isMarvelSelected}
       />
-      {/* <div>
-        <div
-          onClick={() => {
-            setIsMarvelSelected(!isMarvelSelected);
-          }}
-        >
-          Marvel
-        </div>
-        <div
-          onClick={() => {
-            setIsDcSelected(!isDcSelected);
-          }}
-        >
-          Dc
-        </div>
-      </div> */}
       {movies.map((item: Movie) => (
         <Card key={item.id} movie={item} />
       ))}
