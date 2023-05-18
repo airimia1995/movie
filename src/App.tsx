@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "./App.css";
 import axiosInstance from "./api";
 import { Movie } from "./types";
-import { Card, Dropdown, Pagination } from "./components";
+import { Card, Dropdown, FilterByCompany, Pagination } from "./components";
 
 function App() {
   const [movies, setMovies] = React.useState<Movie[]>([]);
@@ -30,8 +30,8 @@ function App() {
     };
 
     const getAll = async () => {
-      const marvelId = await getMarvelCompanyId();
-      const dcId = await getDcCompanyId();
+      await getMarvelCompanyId();
+      await getDcCompanyId();
       // await getAxiosInstance(`${marvelId}|${dcId}`);
     };
     getAll();
@@ -53,6 +53,16 @@ function App() {
   return (
     <div className="App">
       <Dropdown />
+      <FilterByCompany
+        onClickMarvel={() => {
+          setIsMarvelSelected(!isMarvelSelected);
+        }}
+        onClickDc={() => {
+          setIsDcSelected(!isDcSelected);
+        }}
+        isDcSelected={isDcSelected}
+        isMarvelSelected={isMarvelSelected}
+      />
       {/* <div>
         <div
           onClick={() => {

@@ -10,9 +10,9 @@ const FilterByCompany = ({
   isMarvelSelected: boolean;
 }) => {
   return (
-    <div className="w-full">
-      <div onClick={onClickDc}>Marvel</div>
-      <div onClick={onClickMarvel}>Dc</div>
+    <div className="w-full flex py-2">
+      <div className={`w-1/2 me-3 ${isMarvelSelected ? 'bg-teal-500' : 'bg-neutral-300'}`} onClick={onClickMarvel}>Marvel</div>
+      <div className={`w-1/2 ${isDcSelected ? 'bg-teal-500' : 'bg-neutral-300'}`} onClick={onClickDc}>Dc</div>
     </div>
   );
 };
