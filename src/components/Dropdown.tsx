@@ -6,18 +6,19 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Example({
+export default function Example<T>({
   sorters,
   onSelect,
   sortBy,
 }: {
-  sorters: { id: string; label: string }[];
+  sorters: { id: T; label: string }[];
   sortBy: string;
-  onSelect: (id: string) => void;
+  onSelect: (id: T) => void;
 }) {
   const selectedLabel = useMemo(() => {
     return sorters.find((item) => item.id === sortBy)?.label;
   }, [sortBy, sorters]);
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -43,10 +44,9 @@ export default function Example({
           <div className="py-1">
             {sorters.map((item) => {
               return (
-                <Menu.Item key={item.id}>
+                <Menu.Item key={item.id as string}>
                   {({ active }) => (
                     <div
-                      key={item.id}
                       onClick={() => onSelect(item.id)}
                       className={classNames(
                         active ? "bg-gray-100 text-gray-900" : "text-gray-700",

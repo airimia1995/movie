@@ -1,5 +1,5 @@
 import axiosInstance from ".";
-import { ISortDirection } from "../types";
+import { IMovieResponse, ISortDirection } from "../types";
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 const getSortedMovies = async (
@@ -7,14 +7,13 @@ const getSortedMovies = async (
     sortBy: string,
     sortDirection: ISortDirection,
     pageNumber: number,
-) => {
+): Promise<IMovieResponse> => {
     const movies = await axiosInstance.get(
-        `https://api.themoviedb.org/3/discover/movie?with_companies=${withCompany}${sortBy ? "&sort_by=" + sortBy + "." + sortDirection : ""
+        `https://api.themoviedb.org/3/discover/movie?${withCompany ? `with_companies=${withCompany}` : ''}${sortBy ? "&sort_by=" + sortBy + "." + sortDirection : ""
         }&page=1&api_key=${API_KEY}&page=${pageNumber}`
     );
-
     if (movies?.data?.results) {
-        return movies.data.results;
+        return movies.data;
     } else {
         throw new Error("No result found");
     }

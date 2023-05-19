@@ -17,13 +17,13 @@ const OrderDirection = ({
     >
       <ChevronUpIcon
         className={`-mr-1 h-5 w-5 ${
-          sortDirection === "asc" ? "bg-teal-500" : "text-gray-400"
+          sortDirection === "asc" ? "text-teal-500" : "text-gray-400"
         }`}
         aria-hidden="true"
       />
       <ChevronDownIcon
         className={`-mr-1 h-5 w-5 ${
-          sortDirection === "desc" ? "bg-teal-500" : "text-gray-400"
+          sortDirection === "desc" ? "text-teal-500" : "text-gray-400"
         }`}
         aria-hidden="true"
       />

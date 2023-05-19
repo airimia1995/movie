@@ -66,7 +66,7 @@ function Pagination({
   setPageIndex: (index: number) => void;
 }) {
   return (
-    <div className="flex gap-3 flex-wrap p-6 py-12">
+    <div className="flex gap-3 flex-wrap p-6 py-5">
       <PaginationNav
         gotoPage={setPageIndex}
         canPreviousPage={pageIndex > 0}
