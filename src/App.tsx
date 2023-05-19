@@ -113,47 +113,53 @@ function App() {
   ]);
 
   return (
-    <div className="App p-4 relative">
-      {loading && <div>Loading...</div>};
-      {error && <div className="bg-red-500">{error}</div>}
-      <div className="flex grow justify-center">
-        <Dropdown<SortTypeEnum>
-          onSelect={(id) => {
-            setSortBy(id);
-          }}
-          sortBy={sortBy}
-          sorters={sorters}
-        />
-        <SortDirection
-          sortDirection={sortDirection}
-          onChange={(type) => {
-            setSortDirection(type);
-          }}
-        />
-      </div>
+    <div>
+      {loading && (
+        <div className="fixed h-full w-full bg-teal-500 bg-opacity-25 z-50 flex justify-center items-center">
+          Loading...
+        </div>
+      )}
+      <div className="App p-4 relative">
+        {error && <div className="bg-red-500">{error}</div>}
+        <div className="flex grow justify-center">
+          <Dropdown<SortTypeEnum>
+            onSelect={(id) => {
+              setSortBy(id);
+            }}
+            sortBy={sortBy}
+            sorters={sorters}
+          />
+          <SortDirection
+            sortDirection={sortDirection}
+            onChange={(type) => {
+              setSortDirection(type);
+            }}
+          />
+        </div>
 
-      <FilterByCompany
-        onClickMarvel={() => {
-          setIsMarvelSelected(!isMarvelSelected);
-        }}
-        onClickDc={() => {
-          setIsDcSelected(!isDcSelected);
-        }}
-        isDcSelected={isDcSelected}
-        isMarvelSelected={isMarvelSelected}
-      />
-      <div className="flex justify-end grow">
-        <Pagination
-          pageIndex={pageNumber}
-          pageCount={movieResponse.total_pages}
-          setPageIndex={(item) => {
-            setPageNumber(item);
+        <FilterByCompany
+          onClickMarvel={() => {
+            setIsMarvelSelected(!isMarvelSelected);
           }}
+          onClickDc={() => {
+            setIsDcSelected(!isDcSelected);
+          }}
+          isDcSelected={isDcSelected}
+          isMarvelSelected={isMarvelSelected}
         />
+        <div className="flex justify-end grow">
+          <Pagination
+            pageIndex={pageNumber}
+            pageCount={movieResponse.total_pages}
+            setPageIndex={(item) => {
+              setPageNumber(item);
+            }}
+          />
+        </div>
+        {movieResponse.results.map((item: IMovie) => (
+          <Card key={item.id} movie={item} />
+        ))}
       </div>
-      {movieResponse.results.map((item: IMovie) => (
-        <Card key={item.id} movie={item} />
-      ))}
     </div>
   );
 }
